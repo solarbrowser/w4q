@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Quanta JavaScript Engine</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .docs-card {
+            padding: 15px 20px;
+            border-left: 3px solid var(--text-color);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .docs-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .docs-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .docs-card p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../../index.html" class="logo" style="text-decoration: none; color: var(--text-color);">quanta</a>
+            <div class="header-right">
+                <button class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav id="navMenu">
+                    <a href="../../index.html">home</a>
+                    <a href="../blog/blog.html">blog</a>
+                    <a href="docs.html">docs</a>
+                    <a href="../test262/test262.html">test262</a>
+                    <a href="https://github.com/solarbrowser/quanta">github</a>
+                </nav>
+                <button class="theme-switcher" id="themeSwitcher" title="Change theme">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="welcome">
+                <h2>Documentation</h2>
+                <p>Complete guide to understanding and working with the Quanta JavaScript engine.</p>
+            </section>
+
+            <section id="docsContent">
+                <p>Loading documentation...</p>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../script.js"></script>
+    <script>
+        async function loadDocs() {
+            try {
+                const indexResponse = await fetch('topics/index.json');
+                const files = await indexResponse.json();
+                
+                const topics = [];
+                for (const filename of files) {
+                    try {
+                        const response = await fetch(`topics/json/${filename}`);
+                        const topic = await response.json();
+                        topics.push(topic);
+                    } catch (e) {
+                        console.log(`Could not load ${filename}`);
+                    }
+                }
+                
+                const categories = {};
+                topics.forEach(topic => {
+                    if (!categories[topic.category]) {
+                        categories[topic.category] = [];
+                    }
+                    categories[topic.category].push(topic);
+                });
+                
+                Object.keys(categories).forEach(cat => {
+                    categories[cat].sort((a, b) => a.order - b.order);
+                });
+                
+                renderDocs(categories);
+            } catch (e) {
+                document.getElementById('docsContent').innerHTML = '<p>Could not load documentation. Run with HTTP server: python -m http.server 8000</p>';
+            }
+        }
+        
+        const categoryTitles = {
+            'getting-started': 'Getting Started',
+            'architecture': 'Architecture',
+            'compatibility': 'ECMAScript Compatibility',
+            'api': 'API Reference',
+            'contributing': 'Contributing',
+            'roadmap': 'Roadmap'
+        };
+        
+        const categoryOrder = ['getting-started', 'architecture', 'compatibility', 'api', 'contributing', 'roadmap'];
+        
+        function renderDocs(categories) {
+            const container = document.getElementById('docsContent');
+            let html = '<div class="docs-grid">';
+            
+            const allTopics = [];
+            Object.keys(categories).forEach(catKey => {
+                allTopics.push(...categories[catKey]);
+            });
+            
+            allTopics.sort((a, b) => {
+                if (a.category === b.category) {
+                    return a.order - b.order;
+                }
+                return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+            });
+            
+            allTopics.forEach(topic => {
+                html += `
+                    <div class="docs-card" onclick="window.location.href='topic.html?id=${topic.id || topic.title.toLowerCase().replace(/\s+/g, '-')}'">
+                        <h4>${topic.title}</h4>
+                        <p>${topic.description}</p>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            if (allTopics.length === 0) {
+                html = '<p>No documentation available.</p>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        loadDocs();
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-left">
+                built with ♡ in Istanbul by Ata Türkçü
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/solarbrowser/quanta" target="_blank" class="github-badge">
+                    <span class="github-badge-label">Stars</span>
+                    <span class="github-badge-value" id="starCount">0</span>
+                </a>
+                <div class="github-badge">
+                    <span class="github-badge-label">Last Commit</span>
+                    <span class="github-badge-value" id="lastCommit">0m ago</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGitHubStats() {
+            try {
+                const repoResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta');
+                const repoData = await repoResponse.json();
+                document.getElementById('starCount').textContent = repoData.stargazers_count;
+
+                const commitsResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta/commits?per_page=1');
+                const commitsData = await commitsResponse.json();
+                const lastCommitDate = new Date(commitsData[0].commit.author.date);
+                const now = new Date();
+                const diffMs = now - lastCommitDate;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeAgo;
+                if (diffMins < 60) {
+                    timeAgo = diffMins === 0 ? 'just now' : `${diffMins}m ago`;
+                } else if (diffHours < 24) {
+                    timeAgo = `${diffHours}h ago`;
+                } else if (diffDays === 1) {
+                    timeAgo = 'yesterday';
+                } else if (diffDays < 7) {
+                    timeAgo = `${diffDays}d ago`;
+                } else {
+                    timeAgo = lastCommitDate.toLocaleDateString();
+                }
+
+                document.getElementById('lastCommit').textContent = timeAgo;
+            } catch (e) {
+                console.error('Error loading GitHub stats:', e);
+                document.getElementById('starCount').textContent = '-';
+                document.getElementById('lastCommit').textContent = '-';
+            }
+        }
+
+        loadGitHubStats();
+    </script>
+</body>
+</html>

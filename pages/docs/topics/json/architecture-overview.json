@@ -1,0 +1,7 @@
+{
+    "id": "architecture-overview",
+    "title": "Architecture Overview",
+    "description": "Understanding the internal architecture and design principles of Quanta engine.",
+    "category": "architecture",
+    "order": 1
+}

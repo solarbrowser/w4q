@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post - Quanta JavaScript Engine</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .post-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(168, 218, 220, 0.2);
+        }
+        
+        .post-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .post-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .post-content h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .post-content h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .post-content p {
+            margin-bottom: 20px;
+        }
+        
+        .post-content code {
+            background: rgba(168, 218, 220, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .post-content pre {
+            background: rgba(168, 218, 220, 0.05);
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .post-content ul, .post-content ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .post-content li {
+            margin-bottom: 10px;
+        }
+        
+        .post-content blockquote {
+            border-left: 3px solid var(--text-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            opacity: 0.8;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            opacity: 0.7;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../../index.html" class="logo" style="text-decoration: none; color: var(--text-color);">quanta</a>
+            <div class="header-right">
+                <button class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav id="navMenu">
+                    <a href="../../index.html">home</a>
+                    <a href="blog.html">blog</a>
+                    <a href="../docs/docs.html">docs</a>
+                    <a href="../test262/test262.html">test262</a>
+                    <a href="https://github.com/solarbrowser/quanta">github</a>
+                </nav>
+                <button class="theme-switcher" id="themeSwitcher" title="Change theme">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="blog.html" class="back-link">← Back to Blog</a>
+            
+            <article>
+                <div class="post-header">
+                    <h1 class="post-title" id="postTitle">Loading...</h1>
+                    <div class="post-meta">
+                        <span id="postDate"></span>
+                        <span id="postAuthor"></span>
+                    </div>
+                </div>
+                
+                <div class="post-content" id="postContent">
+                    <p>Loading content...</p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <script src="../../script.js"></script>
+    <script>
+        async function loadPost() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('id');
+                
+                if (!postId) {
+                    document.getElementById('postContent').innerHTML = '<p>Post not found.</p>';
+                    return;
+                }
+                
+                const metaResponse = await fetch(`posts/json/${postId}.json`);
+                const metadata = await metaResponse.json();
+                
+                document.getElementById('postTitle').textContent = metadata.title;
+                document.getElementById('postDate').textContent = metadata.date;
+                document.getElementById('postAuthor').textContent = `by ${metadata.author}`;
+                document.title = `${metadata.title} - Quanta Blog`;
+                
+                const contentResponse = await fetch(`posts/markdown/${postId}.md`);
+                const markdown = await contentResponse.text();
+                
+                const html = marked.parse(markdown);
+                document.getElementById('postContent').innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error loading post:', e);
+                document.getElementById('postContent').innerHTML = '<p>Could not load post content.</p>';
+            }
+        }
+        
+        loadPost();
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-left">
+                built with ♡ in Istanbul by Ata Türkçü
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/solarbrowser/quanta" target="_blank" class="github-badge">
+                    <span class="github-badge-label">Stars</span>
+                    <span class="github-badge-value" id="starCount">0</span>
+                </a>
+                <div class="github-badge">
+                    <span class="github-badge-label">Last Commit</span>
+                    <span class="github-badge-value" id="lastCommit">0m ago</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGitHubStats() {
+            try {
+                const repoResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta');
+                const repoData = await repoResponse.json();
+                document.getElementById('starCount').textContent = repoData.stargazers_count;
+
+                const commitsResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta/commits?per_page=1');
+                const commitsData = await commitsResponse.json();
+                const lastCommitDate = new Date(commitsData[0].commit.author.date);
+                const now = new Date();
+                const diffMs = now - lastCommitDate;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeAgo;
+                if (diffMins < 60) {
+                    timeAgo = diffMins === 0 ? 'just now' : `${diffMins}m ago`;
+                } else if (diffHours < 24) {
+                    timeAgo = `${diffHours}h ago`;
+                } else if (diffDays === 1) {
+                    timeAgo = 'yesterday';
+                } else if (diffDays < 7) {
+                    timeAgo = `${diffDays}d ago`;
+                } else {
+                    timeAgo = lastCommitDate.toLocaleDateString();
+                }
+
+                document.getElementById('lastCommit').textContent = timeAgo;
+            } catch (e) {
+                console.error('Error loading GitHub stats:', e);
+                document.getElementById('starCount').textContent = '-';
+                document.getElementById('lastCommit').textContent = '-';
+            }
+        }
+
+        loadGitHubStats();
+    </script>
+</body>
+</html>

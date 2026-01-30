@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test262 - Quanta JavaScript Engine</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: #1a2944;
+            padding: 20px;
+            border: 1px solid #CBDDE9;
+        }
+        
+        table {
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #1a2944;
+            border: 1px solid #CBDDE9;
+        }
+        
+        th, td {
+            padding: 10px 15px;
+            text-align: center;
+            border: 1px solid #CBDDE9;
+        }
+        
+        th {
+            color: #1a2944;
+            font-weight: bold;
+        }
+        
+        td {
+            color: #CBDDE9;
+            background-color: #1a2944;
+        }
+        
+        .summary-row {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../../index.html" class="logo" style="text-decoration: none; color: var(--text-color);">quanta</a>
+            <div class="header-right">
+                <button class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav id="navMenu">
+                    <a href="../../index.html">home</a>
+                    <a href="../blog/blog.html">blog</a>
+                    <a href="../docs/docs.html">docs</a>
+                    <a href="test262.html">test262</a>
+                    <a href="https://github.com/solarbrowser/quanta">github</a>
+                </nav>
+                <button class="theme-switcher" id="themeSwitcher" title="Change theme">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="welcome">
+            <h2>Test262 Compliance</h2>
+            <p>Test262 is the official ECMAScript conformance test suite. Quanta tracks its compatibility with the JavaScript standard by running these tests regularly and measuring progress over time.</p>
+        </section>
+
+        <section class="features">
+            <h3>Current Status</h3>
+            
+            <p id="testSummary" style="margin: 10px 0 20px 0; line-height: 1.6;">Loading test data...</p>
+            
+            <div class="chart-container">
+                <canvas id="testChart"></canvas>
+            </div>
+            
+            <div id="testResults"></div>
+        </section>
+    </main>
+
+    <script src="../../script.js"></script>
+    <script>
+        // Automatically discover and load all JSON files from progress folder
+        async function loadTestData() {
+            const testRuns = [];
+            
+            try {
+                // Load the index of all available JSON files
+                const indexResponse = await fetch('progress/index.json');
+                const fileList = await indexResponse.json();
+                
+                // Load each file
+                for (const filename of fileList) {
+                    try {
+                        const response = await fetch(`progress/${filename}`);
+                        const data = await response.json();
+                        
+                        // Calculate all percentages precisely
+                        const passPercent = (data.pass / data.total) * 100;
+                        const failPercent = (data.fail / data.total) * 100;
+                        const skipPercent = (data.skip / data.total) * 100;
+                        const timeoutPercent = (data.timeout / data.total) * 100;
+                        const unresolvedPercent = (data.unresolved / data.total) * 100;
+                        const crashPercent = (data.crash / data.total) * 100;
+                        
+                        // Calculate sum and adjust to exactly 100%
+                        const sum = passPercent + failPercent + skipPercent + timeoutPercent + unresolvedPercent + crashPercent;
+                        const factor = 100 / sum;
+                        
+                        // Store both precise and display values
+                        data.passPercent = passPercent.toFixed(1);
+                        data.failPercent = failPercent.toFixed(1);
+                        data.skipPercent = skipPercent.toFixed(1);
+                        data.timeoutPercent = timeoutPercent.toFixed(1);
+                        data.unresolvedPercent = unresolvedPercent.toFixed(1);
+                        data.crashPercent = crashPercent.toFixed(1);
+                        
+                        // Normalize all values to sum to exactly 100%
+                        data.passPercentPrecise = passPercent * factor;
+                        data.failPercentPrecise = failPercent * factor;
+                        data.skipPercentPrecise = skipPercent * factor;
+                        data.timeoutPercentPrecise = timeoutPercent * factor;
+                        data.unresolvedPercentPrecise = unresolvedPercent * factor;
+                        data.crashPercentPrecise = crashPercent * factor;
+                        
+                        testRuns.push(data);
+                    } catch (e) {
+                        console.log(`Could not load ${filename}`);
+                    }
+                }
+            } catch (e) {
+                console.log('Could not load index.json');
+            }
+            
+            return testRuns;
+        }
+        
+        // Initialize when data is loaded
+        loadTestData().then(testRuns => {
+            if (testRuns.length === 0) {
+                document.getElementById('testResults').innerHTML = '<p>No test data available. Run with HTTP server: python -m http.server 8000</p>';
+                document.getElementById('testSummary').innerHTML = '';
+                return;
+            }
+            
+            // Find latest test run (last in array since they're chronological)
+            const latestRun = testRuns[testRuns.length - 1];
+            
+            // Create summary paragraph
+            const summaryHTML = `Quanta ran Test262 on <strong>${latestRun.date}</strong> with <strong>${latestRun.total.toLocaleString()}</strong> tests: 
+            <strong>${latestRun.pass.toLocaleString()} passed (${latestRun.passPercent}%)</strong>, 
+            <strong>${latestRun.fail.toLocaleString()} failed</strong>, 
+            <strong>${latestRun.skip.toLocaleString()} skipped</strong>, 
+            <strong>${latestRun.timeout.toLocaleString()} timed out</strong>, 
+            <strong>${latestRun.unresolved.toLocaleString()} unresolved</strong>, 
+            and <strong>${latestRun.crash.toLocaleString()} crashed</strong>.`;
+            
+            document.getElementById('testSummary').innerHTML = summaryHTML;
+            
+            createChart(testRuns);
+            createTable(testRuns);
+        });
+        
+        function createChart(testRuns) {
+            const ctx = document.getElementById('testChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: testRuns.map(run => run.commit),
+                datasets: [
+                    {
+                        label: 'Pass',
+                        data: testRuns.map(run => run.passPercentPrecise),
+                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Skip/Timeout/Unresolved',
+                        data: testRuns.map(run => run.skipPercentPrecise + run.timeoutPercentPrecise + run.unresolvedPercentPrecise),
+                        backgroundColor: 'rgba(255, 235, 59, 0.8)',
+                        borderColor: 'rgba(255, 235, 59, 1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Fail',
+                        data: testRuns.map(run => run.failPercentPrecise),
+                        backgroundColor: 'rgba(244, 67, 54, 0.8)',
+                        borderColor: 'rgba(244, 67, 54, 1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Crash',
+                        data: testRuns.map(run => run.crashPercentPrecise),
+                        backgroundColor: 'rgba(156, 39, 176, 0.8)',
+                        borderColor: 'rgba(156, 39, 176, 1)',
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                        ticks: { color: '#CBDDE9' },
+                        grid: { color: 'rgba(203, 221, 233, 0.2)' }
+                    },
+                    y: {
+                        stacked: true,
+                        ticks: { 
+                            color: '#CBDDE9',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: { color: 'rgba(203, 221, 233, 0.2)' },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#CBDDE9',
+                            boxWidth: 15,
+                            boxHeight: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const run = testRuns[context.dataIndex];
+                                const label = context.dataset.label;
+                                
+                                if (label === 'Skip/Timeout/Unresolved') {
+                                    const skipLine = `  Skip: ${run.skip.toLocaleString()} (${run.skipPercent}%)`;
+                                    const timeoutLine = `  Timeout: ${run.timeout.toLocaleString()} (${run.timeoutPercent}%)`;
+                                    const unresolvedLine = `  Unresolved: ${run.unresolved.toLocaleString()} (${run.unresolvedPercent}%)`;
+                                    return [label, skipLine, timeoutLine, unresolvedLine];
+                                } else if (label === 'Pass') {
+                                    return `Pass: ${run.pass.toLocaleString()} (${run.passPercent}%)`;
+                                } else if (label === 'Fail') {
+                                    return `Fail: ${run.fail.toLocaleString()} (${run.failPercent}%)`;
+                                } else if (label === 'Crash') {
+                                    return `Crash: ${run.crash.toLocaleString()} (${run.crashPercent}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        }
+        
+        function createTable(testRuns) {
+            const container = document.getElementById('testResults');
+            
+            let html = '<table>';
+            html += '<thead><tr>';
+            html += '<th style="background-color: #1a2944; color: #CBDDE9;">Commit</th>';
+            html += '<th style="background-color: #1a2944; color: #CBDDE9;">Date</th>';
+            html += '<th style="background-color: #1a2944; color: #CBDDE9;">Total</th>';
+            html += '<th style="background-color: rgba(76, 175, 80, 0.8);">Pass</th>';
+            html += '<th style="background-color: rgba(244, 67, 54, 0.8);">Fail</th>';
+            html += '<th style="background-color: rgba(255, 235, 59, 0.8);">Skip</th>';
+            html += '<th style="background-color: rgba(255, 235, 59, 0.8);">Timeout</th>';
+            html += '<th style="background-color: rgba(255, 235, 59, 0.8);">Unresolved</th>';
+            html += '<th style="background-color: rgba(156, 39, 176, 0.8);">Crash</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+            
+            testRuns.forEach(run => {
+                html += '<tr>';
+                html += `<td>${run.commit}</td>`;
+                html += `<td>${run.date}</td>`;
+                html += `<td>${run.total}</td>`;
+                html += `<td>${run.pass} (${run.passPercent}%)</td>`;
+                html += `<td>${run.fail} (${run.failPercent}%)</td>`;
+                html += `<td>${run.skip} (${run.skipPercent}%)</td>`;
+                html += `<td>${run.timeout} (${run.timeoutPercent}%)</td>`;
+                html += `<td>${run.unresolved} (${run.unresolvedPercent}%)</td>`;
+                html += `<td>${run.crash} (${run.crashPercent}%)</td>`;
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-left">
+                built with ♡ in Istanbul by Ata Türkçü
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/solarbrowser/quanta" target="_blank" class="github-badge">
+                    <span class="github-badge-label">Stars</span>
+                    <span class="github-badge-value" id="starCount">0</span>
+                </a>
+                <div class="github-badge">
+                    <span class="github-badge-label">Last Commit</span>
+                    <span class="github-badge-value" id="lastCommit">0m ago</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGitHubStats() {
+            try {
+                const repoResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta');
+                const repoData = await repoResponse.json();
+                document.getElementById('starCount').textContent = repoData.stargazers_count;
+
+                const commitsResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta/commits?per_page=1');
+                const commitsData = await commitsResponse.json();
+                const lastCommitDate = new Date(commitsData[0].commit.author.date);
+                const now = new Date();
+                const diffMs = now - lastCommitDate;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeAgo;
+                if (diffMins < 60) {
+                    timeAgo = diffMins === 0 ? 'just now' : `${diffMins}m ago`;
+                } else if (diffHours < 24) {
+                    timeAgo = `${diffHours}h ago`;
+                } else if (diffDays === 1) {
+                    timeAgo = 'yesterday';
+                } else if (diffDays < 7) {
+                    timeAgo = `${diffDays}d ago`;
+                } else {
+                    timeAgo = lastCommitDate.toLocaleDateString();
+                }
+
+                document.getElementById('lastCommit').textContent = timeAgo;
+            } catch (e) {
+                console.error('Error loading GitHub stats:', e);
+                document.getElementById('starCount').textContent = '-';
+                document.getElementById('lastCommit').textContent = '-';
+            }
+        }
+
+        loadGitHubStats();
+    </script>
+</body>
+</html>

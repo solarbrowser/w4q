@@ -1,0 +1,7 @@
+{
+    "id": "test262-results",
+    "title": "Test262 Compliance",
+    "description": "View current ECMAScript compatibility status and Test262 test results.",
+    "category": "compatibility",
+    "order": 1
+}

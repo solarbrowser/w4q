@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Quanta JavaScript Engine</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(168, 218, 220, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 218, 220, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 218, 220, 0.5);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(168, 218, 220, 0.3) rgba(168, 218, 220, 0.05);
+        }
+
+        .docs-layout {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .post-container {
+            width: 100%;
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(168, 218, 220, 0.2);
+        }
+        
+        .post-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .post-content {
+            max-width: 800px;
+            line-height: 1.8;
+        }
+        
+        .post-content h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .post-content h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .post-content p {
+            margin-bottom: 20px;
+        }
+        
+        .post-content code {
+            background: rgba(168, 218, 220, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .post-content pre {
+            background: rgba(168, 218, 220, 0.05);
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .post-content ul, .post-content ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .post-content li {
+            margin-bottom: 10px;
+        }
+        
+        .post-content blockquote {
+            border-left: 3px solid var(--text-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            opacity: 0.8;
+        }
+
+        .post-content hr {
+            border: none;
+            border-top: 1px solid rgba(168, 218, 220, 0.3);
+            margin: 30px 0;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            opacity: 0.7;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .toc-sidebar {
+            position: fixed;
+            top: 120px;
+            right: 50px;
+            width: 240px;
+            padding: 20px;
+            background: rgba(168, 218, 220, 0.05);
+            border: 1px solid rgba(168, 218, 220, 0.2);
+            border-radius: 0;
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+
+        .toc-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(168, 218, 220, 0.3);
+            border-radius: 3px;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 218, 220, 0.5);
+        }
+
+        .toc-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc-item {
+            margin-bottom: 6px;
+        }
+
+        .toc-link {
+            text-decoration: none;
+            color: var(--text-color);
+            opacity: 0.6;
+            font-size: 0.85rem;
+            display: block;
+            padding: 5px 8px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-link:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .toc-link.active {
+            background: var(--text-color);
+            color: var(--bg-color);
+            font-weight: 600;
+        }
+
+        .toc-item.toc-h3 {
+            margin-left: 12px;
+        }
+
+        .toc-item.toc-h3 .toc-link {
+            font-size: 0.8rem;
+        }
+
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger-menu span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            transition: 0.3s;
+        }
+
+        .topic-header .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-toc-toggle {
+            display: none;
+            padding: 6px 12px;
+            background: var(--text-color);
+            color: var(--bg-color);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1000;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .mobile-toc-toggle:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 1400px) {
+            .toc-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topic-header .logo {
+                display: none;
+            }
+
+            .topic-header .container {
+                justify-content: space-between;
+                padding: 0 20px;
+            }
+
+            .topic-header .header-right {
+                width: 100%;
+                justify-content: space-between;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .hamburger-menu {
+                display: flex;
+                order: 1;
+                z-index: 1001;
+            }
+
+            .mobile-toc-toggle {
+                display: block;
+                order: 2;
+            }
+
+            .topic-header .header-right nav {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--bg-color);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                z-index: 999;
+            }
+
+            .topic-header .header-right nav.active {
+                display: flex;
+            }
+
+            .topic-header .header-right nav a {
+                font-size: 1.5rem;
+            }
+
+            .hamburger-menu.active span:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger-menu.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger-menu.active span:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .toc-sidebar {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                max-height: 100vh;
+                padding: 80px 20px 20px 20px;
+                background: var(--bg-color);
+                border: none;
+                border-left: 1px solid rgba(168, 218, 220, 0.2);
+                transition: right 0.3s ease;
+                z-index: 998;
+                overflow-y: auto;
+            }
+
+            .toc-sidebar.active {
+                right: 0;
+                display: block;
+            }
+
+            .post-content {
+                max-width: 100%;
+                padding-bottom: 40px;
+            }
+
+            .post-content pre {
+                overflow-x: auto;
+                font-size: 0.85rem;
+            }
+
+            .post-title {
+                font-size: 1.5rem;
+            }
+
+            .back-link {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topic-header">
+        <div class="container">
+            <a href="../../index.html" class="logo" style="text-decoration: none; color: var(--text-color);">quanta</a>
+            <div class="header-right">
+                <button class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <button class="mobile-toc-toggle" id="mobileTocToggle">OTP</button>
+                <nav id="navMenu">
+                    <a href="../../index.html">home</a>
+                    <a href="../blog/blog.html">blog</a>
+                    <a href="docs.html">docs</a>
+                    <a href="../test262/test262.html">test262</a>
+                    <a href="https://github.com/solarbrowser/quanta">github</a>
+                </nav>
+                <button class="theme-switcher" id="themeSwitcher" title="Change theme">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="docs.html" class="back-link">← Back to Documentation</a>
+            
+            <div class="docs-layout">
+                <div class="post-container">
+                    <article>
+                        <div class="post-header">
+                            <h1 class="post-title" id="postTitle">Loading...</h1>
+                        </div>
+                        
+                        <div class="post-content" id="postContent">
+                            <p>Loading content...</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-title">On this page</div>
+        <ul class="toc-list" id="tocList"></ul>
+    </aside>
+
+    <script src="../../script.js"></script>
+    <script>
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const navMenu = document.getElementById('navMenu');
+        const mobileTocToggle = document.getElementById('mobileTocToggle');
+        const tocSidebar = document.getElementById('tocSidebar');
+
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        mobileTocToggle.addEventListener('click', () => {
+            tocSidebar.classList.toggle('active');
+        });
+
+        tocSidebar.addEventListener('click', (e) => {
+            if (e.target.classList.contains('toc-link')) {
+                tocSidebar.classList.remove('active');
+            }
+        });
+
+        async function loadDoc() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const topicId = urlParams.get('id');
+                
+                if (!topicId) {
+                    document.getElementById('postContent').innerHTML = '<p>Documentation not found.</p>';
+                    return;
+                }
+                
+                const metaResponse = await fetch(`topics/json/${topicId}.json`);
+                const metadata = await metaResponse.json();
+                
+                document.getElementById('postTitle').textContent = metadata.title;
+                document.title = `${metadata.title} - Quanta Documentation`;
+                
+                const contentResponse = await fetch(`topics/markdown/${topicId}.md`);
+                const markdown = await contentResponse.text();
+                
+                const html = marked.parse(markdown);
+                document.getElementById('postContent').innerHTML = html;
+                
+                generateTOC();
+                setupScrollSpy();
+                
+            } catch (e) {
+                console.error('Error loading documentation:', e);
+                document.getElementById('postContent').innerHTML = '<p>Could not load documentation content.</p>';
+            }
+        }
+
+        function generateTOC() {
+            const content = document.getElementById('postContent');
+            const headings = content.querySelectorAll('h2, h3');
+            const tocList = document.getElementById('tocList');
+            
+            if (headings.length === 0) {
+                return;
+            }
+            
+            tocList.innerHTML = '';
+            
+            headings.forEach((heading, index) => {
+                const id = `heading-${index}`;
+                heading.id = id;
+                
+                const li = document.createElement('li');
+                li.className = `toc-item toc-${heading.tagName.toLowerCase()}`;
+                
+                const link = document.createElement('a');
+                link.href = `#${id}`;
+                link.className = 'toc-link';
+                link.textContent = heading.textContent;
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    history.pushState(null, null, `#${id}`);
+                });
+                
+                li.appendChild(link);
+                tocList.appendChild(li);
+            });
+        }
+
+        function setupScrollSpy() {
+            const headings = document.querySelectorAll('.post-content h2, .post-content h3');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            
+            if (headings.length === 0) return;
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        tocLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, {
+                rootMargin: '-100px 0px -66%',
+                threshold: 0
+            });
+            
+            headings.forEach(heading => observer.observe(heading));
+        }
+        
+        loadDoc();
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-left">
+                built with ♡ in Istanbul by Ata Türkçü
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/solarbrowser/quanta" target="_blank" class="github-badge">
+                    <span class="github-badge-label">Stars</span>
+                    <span class="github-badge-value" id="starCount">0</span>
+                </a>
+                <div class="github-badge">
+                    <span class="github-badge-label">Last Commit</span>
+                    <span class="github-badge-value" id="lastCommit">0m ago</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGitHubStats() {
+            try {
+                const repoResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta');
+                const repoData = await repoResponse.json();
+                document.getElementById('starCount').textContent = repoData.stargazers_count;
+
+                const commitsResponse = await fetch('https://api.github.com/repos/solarbrowser/quanta/commits?per_page=1');
+                const commitsData = await commitsResponse.json();
+                const lastCommitDate = new Date(commitsData[0].commit.author.date);
+                const now = new Date();
+                const diffMs = now - lastCommitDate;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeAgo;
+                if (diffMins < 60) {
+                    timeAgo = diffMins === 0 ? 'just now' : `${diffMins}m ago`;
+                } else if (diffHours < 24) {
+                    timeAgo = `${diffHours}h ago`;
+                } else if (diffDays === 1) {
+                    timeAgo = 'yesterday';
+                } else if (diffDays < 7) {
+                    timeAgo = `${diffDays}d ago`;
+                } else {
+                    timeAgo = lastCommitDate.toLocaleDateString();
+                }
+
+                document.getElementById('lastCommit').textContent = timeAgo;
+            } catch (e) {
+                console.error('Error loading GitHub stats:', e);
+                document.getElementById('starCount').textContent = '-';
+                document.getElementById('lastCommit').textContent = '-';
+            }
+        }
+
+        loadGitHubStats();
+    </script>
+</body>
+</html>
