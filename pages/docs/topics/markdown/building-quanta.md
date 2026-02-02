@@ -1,16 +1,12 @@
 # Building Quanta
 
-> **Last Updated:** January 29, 2026  
-> **Version:** 0.1.0  
+> **Last Updated:** February 2, 2026
+> **Version:** 0.1.0.3052126
 > **Author:** Ata Türkçü
 
 ---
 
-Quanta uses platform-native compilers for optimal performance:
-
-- **Windows**: MSVC (Visual Studio) - Native Windows build
-- **Linux**: GCC - Native Linux build
-- **macOS**: Clang/AppleClang - Native macOS build
+Quanta uses **Clang++** for all platforms.
 
 ### Quick Start
 
@@ -29,13 +25,13 @@ Universal Build Script (Recommended):
 ./build.sh clean     # Clean all builds
 ```
 
-Windows (Native MSVC):
+Windows (Clang):
 
 ```bash
-build-windows.bat    # MSVC
+build-windows.bat
 ```
 
-Requires: Visual Studio 2019/2022 + CMake
+Requires: LLVM/Clang installed and in PATH
 
 Linux/macOS:
 
@@ -47,17 +43,16 @@ make -j$(nproc)      # Makefile build
 
 ### Build Outputs
 
-- Windows MSVC: `build-cmake/bin/Release/quanta.exe` (native)
-- Windows MinGW: `build/bin/quanta.exe`
+- Windows: `build/bin/quanta.exe`
 - Linux/macOS: `build/bin/quanta`
-- Static Library: `libquanta.a` or `quanta.lib` (MSVC)
+- Static Library: `build/libquanta.a`
 
 ### Running Tests
 
 Execute JavaScript code directly:
 
 ```bash
-./build/bin/quanta -c "console.log('Hello World');"
+./build/bin/quanta -c "console.log('Hello World')"
 ```
 
 Execute JavaScript file:
@@ -75,14 +70,40 @@ Interactive REPL:
 ### Requirements
 
 - C++17 compatible compiler
-- CMake 3.10 or higher (for CMake builds)
+- Clang/LLVM 10 or higher
 - Make (for Makefile builds on Linux/macOS)
+
+### Installing Clang
+
+**Windows:**
+1. Download LLVM from [llvm.org/releases](https://github.com/llvm/llvm-project/releases)
+2. Install and select "Add LLVM to system PATH"
+3. Verify: `clang++ --version`
+
+**Linux:**
+```bash
+# Ubuntu/Debian
+sudo apt install clang lld
+
+# Fedora
+sudo dnf install clang lld
+
+# Arch
+sudo pacman -S clang lld
+```
+
+**macOS:**
+```bash
+# Clang included with Xcode Command Line Tools
+xcode-select --install
+```
 
 ## Troubleshooting
 
 If you encounter build issues:
 
-1. Make sure you have the required compiler installed
-2. Check that CMake is in your PATH
-3. Try cleaning the build directory: `./build.sh clean`
-4. On Windows, ensure Visual Studio is properly installed with C++ tools
+1. Make sure you have Clang installed and in PATH
+2. Check that Clang version is 10 or higher: `clang++ --version`
+3. Try cleaning the build directory: `./build.sh clean` or `make clean`
+4. On Windows, restart terminal/IDE after installing LLVM
+5. Check build logs: `build/build.log` and `build/errors.log`
