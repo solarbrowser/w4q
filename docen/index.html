@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quanta Docs</title>
+    <meta name="description" content="Official Quanta documentation powered by Docen.">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="canonical" href="https://quanta.js.org/docen/index.html">
+    <meta property="og:title" content="Quanta Docs">
+    <meta property="og:description" content="Official Quanta documentation powered by Docen.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quanta.js.org/docen/index.html">
+    <meta property="og:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Quanta Docs">
+    <meta name="twitter:description" content="Official Quanta documentation powered by Docen.">
+    <meta name="twitter:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="docen-container">
+        <aside class="docen-sidebar">
+            <div class="sidebar-header">
+                <div class="docen-logo">
+                    <h2>Quanta Docs</h2>
+                </div>
+                <button id="sidebar-toggle" class="theme-toggle-btn" title="Close Menu">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="docen-search">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="docen-search-input" placeholder="Search docs..." autocomplete="off">
+                <kbd class="docen-search-shortcut">/</kbd>
+                <div id="docen-search-results" class="docen-search-results"></div>
+            </div>
+            <nav id="docen-nav"></nav>
+            <div class="docen-sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i data-lucide="moon"></i>
+                </button>
+                <a href="https://github.com/solarbrowser/quanta" target="_blank" class="github-btn">
+                    <img src="assets/GitHub_Invertocat_Black.svg" alt="GitHub" class="github-icon github-icon-light">
+                    <img src="assets/GitHub_Invertocat_White.svg" alt="GitHub" class="github-icon github-icon-dark">
+                </a>
+            </div>
+        </aside>
+        <div id="docen-sidebar-backdrop" class="docen-sidebar-backdrop"></div>
+        <main class="docen-content">
+            <button id="mobile-menu-toggle" class="docen-mobile-menu-btn" title="Open Menu">
+                <i data-lucide="menu"></i>
+            </button>
+            <div id="docen-render-area"></div>
+        </main>
+    </div>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

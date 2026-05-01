@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap - Quanta Engine</title>
+    <meta name="description" content="Quanta engine roadmap with interactive milestones and implementation phases.">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="canonical" href="https://quanta.js.org/roadmap.html">
+    <meta property="og:title" content="Roadmap - Quanta Engine">
+    <meta property="og:description" content="Interactive roadmap for Quanta engine milestones and implementation phases.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quanta.js.org/roadmap.html">
+    <meta property="og:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Roadmap - Quanta Engine">
+    <meta name="twitter:description" content="Interactive roadmap for Quanta engine milestones and implementation phases.">
+    <meta name="twitter:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <link rel="icon" href="assets/quanta.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="brand-name" aria-label="Quanta Home"></a>
+        </div>
+        <div class="nav-right">
+            <a href="docen/index.html" target="_blank" rel="noopener noreferrer">docs ↗</a>
+            <a href="test262/test262.html">test262</a>
+            <a href="roadmap.html" aria-current="page">roadmap</a>
+            <a href="blog.html">blog</a>
+            <a href="https://github.com/solarbrowser/quanta" class="github-link">github ↗</a>
+            <button id="theme-toggle" aria-label="Toggle dark mode" style="background:none;border:none;cursor:pointer;margin-left:20px;color:inherit;">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <h1>Roadmap</h1>
+        <p class="description">A quick view of upcoming work. Click a node to expand details.</p>
+
+        <section class="roadmap-board" aria-label="Quanta roadmap">
+            <div class="roadmap-filters">
+                <button class="roadmap-filter-btn active" data-filter="all">all</button>
+                <button class="roadmap-filter-btn" data-filter="in-progress">in progress</button>
+                <button class="roadmap-filter-btn" data-filter="planned">planned</button>
+                <button class="roadmap-filter-btn" data-filter="done">done</button>
+            </div>
+
+            <article class="roadmap-item open" data-state="in-progress">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Reduce crashes + improve ECMAScript compliance</h2>
+                            <p class="roadmap-meta">step 1 • in progress</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Stabilize behavior first, then keep increasing standards compliance test pass rate.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">NaN-boxing</h2>
+                            <p class="roadmap-meta">step 2 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Introduce compact tagged value representation for core runtime values.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">IR</h2>
+                            <p class="roadmap-meta">step 3 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Add an internal intermediate representation to support optimization and later JIT stages.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Bytecode VM</h2>
+                            <p class="roadmap-meta">step 4 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Build out a stronger bytecode execution layer as the core runtime foundation.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Shape system (hidden classes)</h2>
+                            <p class="roadmap-meta">step 5 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Add object shape tracking to speed up repeated property access patterns.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Inline caching</h2>
+                            <p class="roadmap-meta">step 6 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Cache dynamic lookup sites so hot operations avoid repeated generic resolution.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Baseline JIT</h2>
+                            <p class="roadmap-meta">step 7 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Compile hot bytecode paths into native code with a simple first-tier JIT.</p>
+            </article>
+
+            <article class="roadmap-item" data-state="planned">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">Garbage collector</h2>
+                            <p class="roadmap-meta">step 8 • planned</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Implement managed memory collection suitable for the new runtime architecture.</p>
+            </article>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test262 - Quanta Engine</title>
+    <meta name="description" content="Tracking ECMAScript conformance progress for the Quanta engine with Test262 results.">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="canonical" href="https://quanta.js.org/test262/test262.html">
+    <meta property="og:title" content="Test262 - Quanta Engine">
+    <meta property="og:description" content="Tracking ECMAScript conformance progress for the Quanta engine with Test262 results.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quanta.js.org/test262/test262.html">
+    <meta property="og:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Test262 - Quanta Engine">
+    <meta name="twitter:description" content="Tracking ECMAScript conformance progress for the Quanta engine with Test262 results.">
+    <meta name="twitter:image" content="https://quanta.js.org/assets/quanta_social_card.svg">
+    <link rel="icon" href="../assets/quanta.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .chart-wrapper {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 20px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); }
+        th { color: var(--dim-text); font-weight: normal; background-color: var(--code-bg); }
+        .pass-cell { color: #4CAF50; font-weight: 500; }
+        .fail-cell { color: #F44336; font-weight: 500; }
+        .skip-cell { color: #FF9800; font-weight: 500; }
+        .crash-cell { color: #9C27B0; font-weight: 500; }
+        .summary-grid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .summary-content {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .summary-content strong {
+            color: var(--text-color);
+        }
+        .pie-wrapper {
+            width: 250px;
+            height: 250px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 600px) {
+            .summary-grid {
+                flex-direction: column;
+                text-align: center;
+            }
+            .pie-wrapper {
+                width: 200px;
+                height: 200px;
+            }
+        }
+        .brand-name {
+            display: inline-block;
+            width: 125px;
+            height: 32px;
+            background-color: #ffffff;
+            -webkit-mask: url('../assets/quantatext.svg') no-repeat center;
+            mask: url('../assets/quantatext.svg') no-repeat center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            transition: background-color 0.3s;
+            transform: translateY(4px);
+        }
+        [data-theme="light"] .brand-name {
+            background-color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="brand-name" aria-label="Quanta Home"></a>
+        </div>
+        <div class="nav-right">
+            <a href="../docen/index.html" target="_blank" rel="noopener noreferrer">docs ↗</a>
+            <a href="test262.html" aria-current="page">test262</a>
+            <a href="../roadmap.html">roadmap</a>
+            <a href="../blog.html">blog</a>
+            <a href="https://github.com/solarbrowser/quanta" class="github-link">github ↗</a>
+            <button id="theme-toggle" aria-label="Toggle dark mode" style="background:none;border:none;cursor:pointer;margin-left:20px;color:inherit;">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </nav>
+    <main class="test-container">
+        <h1>Test262 Results</h1>
+        <p class="description">Tracking ECMAScript conformance for the Quanta engine.</p>
+
+        <p id="loadingMsg" style="color: var(--dim-text); font-style: italic;">Loading data...</p>
+
+        <div id="latestSummaryContainer" style="display: none;">
+            <h2>Latest Run</h2>
+            <div class="summary-grid">
+                <div class="summary-content" id="testSummaryText">
+                </div>
+                <div class="pie-wrapper">
+                    <canvas id="latestPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 40px; display: none;" id="historyTitle">Recent History</h2>
+        <div class="chart-wrapper" id="historyChart" style="display: none;">
+            <canvas id="testChart"></canvas>
+        </div>
+        <div id="testTableContainer" style="overflow-x: auto;"></div>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../script.js"></script>
+    <script>
+        function formatOrdinalDate(dateStr) {
+            let parts = dateStr.split("-");
+            if(parts.length !== 3) return dateStr;
+            let year = parts[0];
+            let monthIdx = parseInt(parts[1], 10) - 1;
+            let day = parseInt(parts[2], 10);
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            let suffix = "th";
+            if (day % 10 === 1 && day !== 11) suffix = "st";
+            else if (day % 10 === 2 && day !== 12) suffix = "nd";
+            else if (day % 10 === 3 && day !== 13) suffix = "rd";
+
+            return day + suffix + " " + months[monthIdx] + " of " + year;
+        }
+
+        async function loadTestData() {
+            try {
+                const res = await fetch("progress/index.json");
+                const all = await res.json();
+                const fileList = all;
+                const runs = [];
+                for(let file of fileList) {
+                    try {
+                        let r = await fetch("progress/" + file);
+                        let d = await r.json();
+                        let pass = (d.pass/d.total)*100, fail = (d.fail/d.total)*100, skip = (d.skip/d.total)*100, timeout = (d.timeout/d.total)*100, unres = (d.unresolved/d.total)*100, crash = (d.crash/d.total)*100;
+                        let f = 100 / (pass+fail+skip+timeout+unres+crash);
+                        d.passPct = pass.toFixed(1); d.failPct = fail.toFixed(1); d.skipPct = skip.toFixed(1); d.timeoutPct = timeout.toFixed(1); d.unresPct = unres.toFixed(1); d.crashPct = crash.toFixed(1);
+                        d.passPrecise = pass*f; d.failPrecise = fail*f; d.skipPrecise = skip*f; d.timeoutPrecise = timeout*f; d.unresPrecise = unres*f; d.crashPrecise = crash*f;
+                        d.prettyDate = formatOrdinalDate(d.date);
+                        runs.push(d);
+                    } catch(e) {}
+                }
+                return runs;
+            } catch(e) { return []; }
+        }
+
+        loadTestData().then(runs => {
+            document.getElementById("loadingMsg").style.display = "none";
+            if(runs.length === 0) { document.getElementById("testSummaryText").innerText = "No data."; document.getElementById("latestSummaryContainer").style.display = "block"; return; }
+            document.getElementById("latestSummaryContainer").style.display = "block";
+            document.getElementById("historyTitle").style.display = "block";
+            document.getElementById("historyChart").style.display = "block";
+
+            let l = runs[runs.length-1];
+
+            let skipSum = l.skip + l.timeout + l.unresolved;
+            let summaryHTML = "The latest Test262 suite ran on <strong style=\"color:var(--text-color);\">" + l.prettyDate + "</strong> against commit <strong>" + l.commit + "</strong>.<br><br>";
+            summaryHTML += "Out of <strong>" + l.total.toLocaleString() + "</strong> total tests:<br>";
+            summaryHTML += "<ul style=\"margin-left: 20px; margin-top: 10px; color: var(--dim-text);\">";
+            summaryHTML += "<li><span class=\"pass-cell\">" + l.pass.toLocaleString() + "</span> tests passed (<strong>" + l.passPct + "%</strong>)</li>";
+            summaryHTML += "<li><span class=\"fail-cell\">" + l.fail.toLocaleString() + "</span> tests failed (<strong>" + l.failPct + "%</strong>)</li>";
+            summaryHTML += "<li><span class=\"skip-cell\">" + skipSum.toLocaleString() + "</span> were skipped or unresolved</li>";
+            if (l.crash > 0) summaryHTML += "<li><span class=\"crash-cell\">" + l.crash.toLocaleString() + "</span> tests crashed</li>";
+            summaryHTML += "</ul>";
+
+            document.getElementById("testSummaryText").innerHTML = summaryHTML;
+
+            createPieChart(l);
+            createChart(runs); createTable(runs);
+        });
+
+        function createPieChart(latestRun) {
+            let tc = document.body.getAttribute("data-theme") === "light" ? "#1a1a1a" : "#f9f7f2";
+            new Chart(document.getElementById("latestPieChart").getContext("2d"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Pass", "Skip/Other", "Fail", "Crash"],
+                    datasets: [{
+                        data: [ latestRun.pass, latestRun.skip + latestRun.timeout + latestRun.unresolved, latestRun.fail, latestRun.crash ],
+                        backgroundColor: [ "rgba(76, 175, 80, 0.8)", "rgba(255, 152, 0, 0.8)", "rgba(244, 67, 54, 0.8)", "rgba(156, 39, 176, 0.8)" ],
+                        borderColor: [ "rgba(76, 175, 80, 1)", "rgba(255, 152, 0, 1)", "rgba(244, 67, 54, 1)", "rgba(156, 39, 176, 1)" ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let raw = context.raw;
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let pct = ((raw / total) * 100).toFixed(1);
+                                    return context.label + ": " + raw.toLocaleString() + " (" + pct + "%)";
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createChart(runs) {
+            let tc = document.body.getAttribute("data-theme") === "light" ? "#1a1a1a" : "#f9f7f2";
+            let gc = document.body.getAttribute("data-theme") === "light" ? "#ebebeb" : "#333";
+            new Chart(document.getElementById("testChart").getContext("2d"), {
+                type: "line",
+                data: {
+                    labels: runs.map(r => r.commit),
+                    datasets: [
+                        { label: "Pass", data: runs.map(r => r.passPrecise), rawData: runs.map(r => r.pass), pctData: runs.map(r => r.passPct), backgroundColor: "rgba(76, 175, 80, 0.8)", borderColor: "rgba(76, 175, 80, 1)", fill: true },
+                        { label: "Skip/Other", data: runs.map(r => r.skipPrecise + r.timeoutPrecise + r.unresPrecise), rawData: runs.map(r => r.skip + r.timeout + r.unresolved), pctData: runs.map(r => (parseFloat(r.skipPct) + parseFloat(r.timeoutPct) + parseFloat(r.unresPct)).toFixed(1)), backgroundColor: "rgba(255, 152, 0, 0.8)", borderColor: "rgba(255, 152, 0, 1)", fill: true },
+                        { label: "Fail", data: runs.map(r => r.failPrecise), rawData: runs.map(r => r.fail), pctData: runs.map(r => r.failPct), backgroundColor: "rgba(244, 67, 54, 0.8)", borderColor: "rgba(244, 67, 54, 1)", fill: true },
+                        { label: "Crash", data: runs.map(r => r.crashPrecise), rawData: runs.map(r => r.crash), pctData: runs.map(r => r.crashPct), backgroundColor: "rgba(156, 39, 176, 0.8)", borderColor: "rgba(156, 39, 176, 1)", fill: true }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { stacked: true, ticks: { color: tc }, grid: { color: gc } },
+                        y: { stacked: true, ticks: { color: tc, callback: v => v + "%" }, grid: { color: gc }, min: 0, max: 100 }
+                    },
+                    plugins: {
+                        legend: { labels: { color: tc } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let raw = context.dataset.rawData[context.dataIndex];
+                                    let pct = context.dataset.pctData[context.dataIndex];
+                                    return context.dataset.label + ": " + raw.toLocaleString() + " (" + pct + "%)";
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createTable(runs) {
+            let html = "<table><thead><tr><th>Commit</th><th>Date</th><th>Total</th><th>Pass</th><th>Fail</th><th>Skip/Other</th><th>Crash</th></tr></thead><tbody>";
+            [...runs].reverse().forEach(r => {
+                let sPct = (parseFloat(r.skipPct) + parseFloat(r.timeoutPct) + parseFloat(r.unresPct)).toFixed(1);
+                let sRaw = r.skip + r.timeout + r.unresolved;
+                html += "<tr><td>" + r.commit + "</td><td>" + r.prettyDate + "</td><td>" + r.total.toLocaleString() + "</td><td class=\"pass-cell\">" + r.pass.toLocaleString() + " (" + r.passPct + "%)</td><td class=\"fail-cell\">" + r.fail.toLocaleString() + " (" + r.failPct + "%)</td><td class=\"skip-cell\">" + sRaw.toLocaleString() + " (" + sPct + "%)</td><td class=\"crash-cell\">" + r.crash.toLocaleString() + " (" + r.crashPct + "%)</td></tr>";
+            });
+            document.getElementById("testTableContainer").innerHTML = html + "</tbody></table>";
+        }
+    </script>
+</body>
+</html>
