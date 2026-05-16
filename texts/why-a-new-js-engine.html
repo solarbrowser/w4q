@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why a new JS engine? - Quanta Engine</title>
+    <meta name="description" content="Story behind Quanta Engine and its future.">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" href="../assets/quanta.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="brand-name" aria-label="Quanta Home"></a>
+        </div>
+        <div class="nav-right">
+            <a href="../docen/index.html" target="_blank" rel="noopener noreferrer">docs ↗</a>
+            <a href="../test262/test262.html">test262</a>
+            <a href="../roadmap.html">roadmap</a>
+            <a href="../blog.html">blog</a>
+            <a href="https://github.com/solarbrowser/quanta" class="github-link">github ↗</a>
+            <button id="theme-toggle" aria-label="Toggle dark mode" style="background:none;border:none;cursor:pointer;margin-left:20px;color:inherit;">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <article class="blog-post">
+            <h2>why a new js engine?</h2>
+
+            <h2>story behind it</h2>
+            <p>let's go back in time, to the nine years old me. i was meeting with computers for the first time -- like actually using them -- as what anybody can expect from a child when they got into the computers would be playing games probably<br>
+            and yes i wanted to play games especially minecraft. but the oldness of that pc was pulling me back, at the same time i was watching malware tests like MEMZ virus and the viewers of channels' that i watch were building their own viruses and sending them to the youtuber</p>
+
+            <p>and i wanted to build my own virus, i didn't know anything about programming back then. i was just searching like "how to make virus" and by that i learned little bit visual basic script. and i have loved creating things <br>
+            then i met a friend from minecraft, that directed me to install visual studio and learn c#, i was very happy because now i could make things with gui</p>
+
+            <p>after creating some weird stuff, i discovered webview there -- at the time i was trying like bunch of browsers -- and i thought like i can make my own browser! i did, but back in time webview2 wasn't a built-in thing in c# net -- idk if it is now --<br>
+            as you can think, it was very slow and it wasn't supporting the latest javascript stuff but i was happy with the thing that i've done.</p>
+
+            <p>i was creating little stuff like random selection software from a list and by the summer of 2023, there was a meme in Türkiye back then and i wanted to create a browser from it.<br>
+            and i did, i used webview2 and it was more complicated than the first browser i did -- that one didn't have any tab management etc. -- but, i had to give a break to programming because of a very stressful highschool entry  exam in Türkiye :0 -- i wish i didn't give break --</p>
+
+            <p>after the exam, i didn't get the score that i wanted -- and from now on i don't care much about something -- but i got back into the programming and that summer was -- 2024 summer -- the last date that i wrote c# i think</p>
+
+            <p>and in my freshman year, i wanted to build another web browser, but this was serious -- it wasn't a idea of meme or a momentary whim -- first i made a prototype in python with a webview then a mobile prototype in dart...</p>
+
+            <p>by the june 2025, i decided to make it, like really. i wanted to use firefox as a core but i didn't want to deal with the codebase and took a risk, i wanted to build my own engine, and started with quanta<br>
+            back then i didn't have any idea how would quanta be, what will it solve etc.. it looked easy, because now i wasn't alone, i thought that i could built an engine with the help of ai and i was right i think, because without ai i don't think that quanta would be this much developed. why?<br>
+            because it is waaaaaay complicated than it seems -- idk how you see it --, you can do hobby engine that not even passes %10 of suite, that's possible, but making a engine that will be used in a browser engine -- like it has to atleast pass 40k+ tests to run most of the  pages without any glitch -- is different, even if you can do, it would take years, and in those years will you have the same motivation as you had at start?</p>
+
+            <h2>future of quanta</h2>
+
+            <p>when i started quanta, i had no idea what would it be like, but with raw 6 months of developing stage -- it is actually about to be 10 months i think but i am excluding the days that i didn't work on quanta because of exams and mental breaks (look, even with help of ai you have to give yourself mental breaks :D) -- i am aiming into both memory efficient and fast engine<br>
+            you might think like efficient and fast?, it is kinda tricky, because main reason of this engine is real world usage on browsers, so in benchmarks it can be "slow" when compared to other engines but to solve this i am thinking of performance profiles while designing the engine architect on optimization side i will make it as much as modular to make this possible<br>
+            you can think of what do you mean my real world usage on browsers, there is hidden layer that shows us everything on the screen, which named DOM, it is slow as hell because it is creating lot of objects and it is making the whole process slower, like if you review the benchmarks, you can see there is nearly 3 times performance difference between spidermonkey and v8 but in real world you can't feel it unless in google's sites -- because of chrome specific optimizations --</p>
+
+            <p>as of today -- may 16 2026 -- quanta passing about 27k tests on test262 and my aim is 40k, but why? because there is around 53k tests and 12k of them are staging or legacy and for now i think 40k is enough<br>
+            and after that we are going to do the roadmap on our website</p>
+
+            <p>thanks for reading!</p>
+
+            <p><em>Written by Ata Türkçü on May 16 2026</em></p>
+        </article>
+    </main>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../script.js"></script>
+</body>
+</html>
