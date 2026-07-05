@@ -49,6 +49,7 @@
                 <button class="roadmap-filter-btn" data-filter="in-progress">in progress</button>
                 <button class="roadmap-filter-btn" data-filter="planned">planned</button>
                 <button class="roadmap-filter-btn" data-filter="done">done</button>
+				<button class="roadmap-filter-btn" data-filter="in-future">in future</button>
             </div>
 
             <article class="roadmap-item open" data-state="in-progress">
@@ -93,13 +94,13 @@
                 <p class="roadmap-item-content">Build out a stronger bytecode execution layer as the core runtime foundation.</p>
             </article>
 
-            <article class="roadmap-item" data-state="planned">
+            <article class="roadmap-item" data-state="in-progress">
                 <div class="roadmap-item-head">
                     <div class="roadmap-item-title-wrap">
                         <span class="roadmap-node" aria-hidden="true"></span>
                         <div>
                             <h2 class="roadmap-title">Shape system (hidden classes)</h2>
-                            <p class="roadmap-meta">step 4 • planned</p>
+                            <p class="roadmap-meta">step 4 • in progress</p>
                         </div>
                     </div>
                     <button class="roadmap-toggle" aria-label="Toggle item">+</button>
@@ -119,6 +120,20 @@
                     <button class="roadmap-toggle" aria-label="Toggle item">+</button>
                 </div>
                 <p class="roadmap-item-content">Cache dynamic lookup sites so hot operations avoid repeated generic resolution.</p>
+            </article>
+
+			<article class="roadmap-item" data-state="in-future">
+                <div class="roadmap-item-head">
+                    <div class="roadmap-item-title-wrap">
+                        <span class="roadmap-node" aria-hidden="true"></span>
+                        <div>
+                            <h2 class="roadmap-title">IR/JIT</h2>
+                            <p class="roadmap-meta">in future</p>
+                        </div>
+                    </div>
+                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+                </div>
+                <p class="roadmap-item-content">Some future plans about optimization 🤔</p>
             </article>
             
         </section>
