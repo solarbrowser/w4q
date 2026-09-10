@@ -52,13 +52,13 @@
 				<button class="roadmap-filter-btn" data-filter="in-future">in future</button>
             </div>
 
-            <article class="roadmap-item open" data-state="in-progress">
+            <article class="roadmap-item open" data-state="done">
                 <div class="roadmap-item-head">
                     <div class="roadmap-item-title-wrap">
                         <span class="roadmap-node" aria-hidden="true"></span>
                         <div>
                             <h2 class="roadmap-title">Reduce crashes + improve ECMAScript compliance</h2>
-                            <p class="roadmap-meta">step 1 • in progress</p>
+                            <p class="roadmap-meta">step 1 • done</p>
                         </div>
                     </div>
                     <button class="roadmap-toggle" aria-label="Toggle item">+</button>
@@ -80,13 +80,13 @@
                 <p class="roadmap-item-content">Implemented managed memory collection suitable for the new runtime architecture.</p>
             </article>
 
-            <article class="roadmap-item" data-state="in-progress">
+            <article class="roadmap-item" data-state="done">
                 <div class="roadmap-item-head">
                     <div class="roadmap-item-title-wrap">
                         <span class="roadmap-node" aria-hidden="true"></span>
                         <div>
                             <h2 class="roadmap-title">Bytecode VM</h2>
-                            <p class="roadmap-meta">step 3 • in progress</p>
+                            <p class="roadmap-meta">step 3 • done</p>
                         </div>
                     </div>
                     <button class="roadmap-toggle" aria-label="Toggle item">+</button>
@@ -94,34 +94,49 @@
                 <p class="roadmap-item-content">Build out a stronger bytecode execution layer as the core runtime foundation.</p>
             </article>
 
-            <article class="roadmap-item" data-state="in-progress">
-                <div class="roadmap-item-head">
-                    <div class="roadmap-item-title-wrap">
-                        <span class="roadmap-node" aria-hidden="true"></span>
-                        <div>
-                            <h2 class="roadmap-title">Shape system (hidden classes)</h2>
-                            <p class="roadmap-meta">step 4 • in progress</p>
-                        </div>
-                    </div>
-                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
-                </div>
-                <p class="roadmap-item-content">Add object shape tracking to speed up repeated property access patterns.</p>
-            </article>
+			<article class="roadmap-item" data-state="planned">
+			                <div class="roadmap-item-head">
+			                    <div class="roadmap-item-title-wrap">
+			                        <span class="roadmap-node" aria-hidden="true"></span>
+			                        <div>
+			                            <h2 class="roadmap-title">Intl support</h2>
+			                            <p class="roadmap-meta">planned</p>
+			                        </div>
+			                    </div>
+			                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+			                </div>
+			           <p class="roadmap-item-content">Planned with ICU4X integration for internationalization api which is important for web browsing</p>
+		    </article>
+
+			<article class="roadmap-item" data-state="planned">
+					                <div class="roadmap-item-head">
+					                    <div class="roadmap-item-title-wrap">
+					                        <span class="roadmap-node" aria-hidden="true"></span>
+					                        <div>
+					                            <h2 class="roadmap-title">Temporal api support</h2>
+					                            <p class="roadmap-meta">planned</p>
+					                        </div>
+					                    </div>
+					                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+					                </div>
+					  <p class="roadmap-item-content">The Temporal API is a new, global global object built into JavaScript that serves as a modern replacement for the notoriously flawed legacy Date object.</p>
+		    </article>
 
             <article class="roadmap-item" data-state="planned">
-                <div class="roadmap-item-head">
-                    <div class="roadmap-item-title-wrap">
-                        <span class="roadmap-node" aria-hidden="true"></span>
-                        <div>
-                            <h2 class="roadmap-title">Inline caching</h2>
-                            <p class="roadmap-meta">step 5 • planned</p>
-                        </div>
-                    </div>
-                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
-                </div>
-                <p class="roadmap-item-content">Cache dynamic lookup sites so hot operations avoid repeated generic resolution.</p>
+            					                <div class="roadmap-item-head">
+            					                    <div class="roadmap-item-title-wrap">
+            					                        <span class="roadmap-node" aria-hidden="true"></span>
+            					                        <div>
+            					                            <h2 class="roadmap-title">WASM support</h2>
+            					                            <p class="roadmap-meta">planned</p>
+            					                        </div>
+            					                    </div>
+            					                    <button class="roadmap-toggle" aria-label="Toggle item">+</button>
+            					                </div>
+            					  <p class="roadmap-item-content">Low-level, assembly-like instruction format for web applications</p>
             </article>
-
+                         
+			
 			<article class="roadmap-item" data-state="in-future">
                 <div class="roadmap-item-head">
                     <div class="roadmap-item-title-wrap">
@@ -133,7 +148,7 @@
                     </div>
                     <button class="roadmap-toggle" aria-label="Toggle item">+</button>
                 </div>
-                <p class="roadmap-item-content">Some future plans about optimization 🤔</p>
+                <p class="roadmap-item-content">Planned for 4th or 5th version of Quanta, depends on Solar Browser</p>
             </article>
             
         </section>
