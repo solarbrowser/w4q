@@ -1,9 +1,11 @@
-# Quanta ECMAScript Engine Documentation
+# Documentation
 
-This is Quanta's official documentation page.
+This documentation is for anyone who wants to understand Quanta, develop it further, fork it, or use it in their own applications. It may still have gaps -- the engine is still experimental, and the docs are maturing alongside it. Contributions are welcome, see [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-Docs are powered by **Docen**: https://github.com/ataturkcu/docen
+## About Quanta
 
-There is not much documentation yet, but more pages will be added as soon as possible.
+Quanta is an ECMAScript engine I started building to make my own dream of a browser real, and it matured over about a year. Windows, macOS, and Linux are the supported platforms. It has no JIT yet -- it's an interpreter. You can run JavaScript code that doesn't require a DOM in Quanta. Embeddability hasn't been tested yet.
 
-For now, the **Build** page is the main up-to-date reference.
+## About Docen 
+
+Links may not work, use on page TOC or navigate manually.
