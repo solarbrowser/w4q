@@ -10,7 +10,7 @@ export const docenConfig = {
     showDefaultIcons: true,
 
     // Developer options
-    developerMode: true,
+    developerMode: false,
     // If you don't want to see the developer mode icon or if you are planning to release you can set this to false.
 
     // Sidebar navigation mapping
