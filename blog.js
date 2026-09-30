@@ -1,4 +1,5 @@
 const blogPosts = [
+            'texts/journey-of-quanta.html',
             'texts/why-a-new-js-engine.html'
         ];
 

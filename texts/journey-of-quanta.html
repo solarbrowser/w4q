@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey of Quanta: 1.0.0 - Quanta Engine</title>
+    <meta name="description" content="How Quanta was built, the decisions behind it, and where it stands at 1.0.0.">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" href="../assets/quanta.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="brand-name" aria-label="Quanta Home"></a>
+        </div>
+        <div class="nav-right">
+            <a href="../docen/index.html" target="_blank" rel="noopener noreferrer">docs ↗</a>
+            <a href="../test262/test262.html">test262</a>
+            <a href="../roadmap.html">roadmap</a>
+            <a href="../blog.html">blog</a>
+            <a href="https://github.com/solarbrowser/quanta" class="github-link">github ↗</a>
+            <button id="theme-toggle" aria-label="Toggle dark mode" style="background:none;border:none;cursor:pointer;margin-left:20px;color:inherit;">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <article class="blog-post">
+            <h2>journey of quanta: release 1.0.0</h2>
+
+            <h2>introduction -- why quanta?</h2>
+
+            <p>since the pandemic, i wanted to make my own browser. back then, i had no idea how i was going to do it. i made some prototypes using webviews, but they weren't enough. in the summer of 2025, i started working on it. i had tried firefox before, but it didn't work out. i didn't have the freedom i wanted. i wasn't looking for a different skin with a few new features. i wanted to be in control.</p>
+
+            <p>i knew it was going to be difficult, but i had no idea how big the difficulty actually was.</p>
+
+            <p>that's where quanta started.</p>
+
+            <p>for almost 6 months, there was basically no progress. that was the learning phase. to be honest, when i started, i knew almost nothing about how javascript engines worked. after february 2026, things started moving much faster. you can see it yourself if you look at quanta's test history. it went from 21.8% to the 80s in just 5 months, and those 5 months weren't even continuous. there were breaks and other things in between.</p>
+
+            <p>what i'm trying to say is that quanta wasn't originally a standalone project in my mind. it was supposed to be a part of solar. but it's not that anymore. it became a project on its own.</p>
+
+            <p>it was the first step toward solar.</p>
+
+            <p>i never thought it would come this far. now it's an engine that can compete with quickjs in benchmarks, and its compatibility is getting there as well.</p>
+
+            <h2>the journey behind it -- how i built it</h2>
+
+            <p>i'm not going to lie about this: eventho i don't like to mention it i'm a 16-year-old high school student.</p>
+
+            <p>most of my day is spent at school and studying, and the other half is basically spent sleeping. realistically speaking, if i heard that a 16-year-old built a javascript engine, i probably wouldn't believe it either. because it doesn't sound real.</p>
+
+            <p>but our generation has a tool that makes things like this possible.</p>
+
+            <p>its name is ai.</p>
+
+            <p>whenever people see ai involved in something, we immediately put the "ai slop" label on it. maybe we're against it, maybe we aren't. but i'm going to be honest.</p>
+
+            <p>even though i filtered the architectural decisions, even though i made the decisions and designed the architecture, a biiiiig part of the code was written by ai.</p>
+
+            <p>am i ashamed of that?</p>
+
+            <p>no.</p>
+
+            <p>then you might say, "okay, you used ai, how are we supposed to trust your code?"</p>
+
+            <p>let me explain.</p>
+
+            <p>i didn't just throw prompts at an ai and press accept.</p>
+
+            <p>i went through the code. i stress-tested it. i ran test262 every day and after basically every change. i didn't rely only on test262 either. i tested real-world scripts, compared quanta with other engines, used different comparison suites with different engines, optimized its memory usage, and kept fixing things based on what those tests showed.</p>
+
+            <p>and honestly, where quanta is today is much better than what i expected when i started.</p>
+
+            <p>when i first started, i thought that after 24 months i would maybe reach around 60% test262 compatibility with a tree-walker somehow.</p>
+
+            <p>now, with temporal excluded, it goes beyond 90%, and it has a bytecode vm and a non-moving gc.</p>
+
+            <p>did i never struggle?</p>
+
+            <p>of course i did. how could i not?</p>
+
+            <p>using ai doesn't make development sunshine and rainbows. at the end of the day, you're still working on a computer algorithm and what is, in my opinion, one of the harder kinds of projects in computer science.</p>
+
+            <p>quanta started as a tree-walker. my first goal was simply increasing spec compatibility.</p>
+
+            <p>once i reached the point i was aiming for, i moved on to building a proper gc. in the old version, you could almost say there wasn't even a gc. it couldn't really grow beyond around 10,000 objects. it was basically there for correctness.</p>
+
+            <p>once that was done, a proper gc was implemented. after that came the vm, performance improvements, and everything else.</p>
+
+            <p>you might be thinking, "where is the difficulty in this? what the freak?"</p>
+
+            <p>and honestly, at first, there doesn't seem to be much.</p>
+
+            <p>the normal development process itself wasn't painfully difficult to me. what was difficult was how long everything took, the lack of visibility, and most importantly, the bug hunts that sometimes took days while making it feel like absolutely nothing had progressed.</p>
+
+            <p>but this project taught me a lot.</p>
+
+            <p>i can design systems now. i know how to work with ai properly. i understand a lot more about how these things actually fit together.</p>
+
+            <p>so maybe it wasn't that much of a "journey" in the traditional sense, but hopefully you can get at least a little bit of a feeling for how quanta was actually developed.</p>
+
+            <h2>architectural decisions -- and why?</h2>
+
+            <p>this part obviously connects back to solar, because as i mentioned at the beginning, quanta's architecture was designed around what i imagine solar's final architecture to look like.</p>
+
+            <p>i wanted the choices to fit that architecture as naturally as possible.</p>
+
+            <h2>register-based bytecode vm</h2>
+
+            <p>there isn't a huge story behind this one.</p>
+
+            <p>fewer instructions.</p>
+
+            <h2>threaded dispatch</h2>
+
+            <p>as i mentioned, quanta started as a tree-walker.</p>
+
+            <p>when i moved it to a vm, i initially used switch-based dispatch. later, because of performance reasons, i moved to threaded dispatch.</p>
+
+            <h2>one non-moving garbage collector</h2>
+
+            <p>if you look through the code, you can see that there are things like dom, layout, and networking-related tags that aren't really part of javascript itself. these are reserved for the solar browser.</p>
+
+            <p>solar doesn't treat the dom and javascript as two completely separate worlds.</p>
+
+            <p>they live in the same world.</p>
+
+            <p>that's why having one non-moving gc made sense for the architecture.</p>
+
+            <p>does a non-moving gc have risks?</p>
+
+            <p>yes.</p>
+
+            <p>but we try to minimize them as much as possible by using allocations aligned to 16-byte sizes, expanding freed regions when possible, reusing objects of the same type, and a bunch of other small things.</p>
+
+            <h2>allocator -- mimalloc</h2>
+
+            <p>the choice of mimalloc actually came pretty late.</p>
+
+            <p>i probably made this decision this september</p>
+
+            <p>the reason was that at that point, it wasn't only about speed or compatibility anymore. memory usage had become important too.</p>
+
+            <p>with one of the bundled scripts we use, which is around 3 mb, the allocator's contribution was actually significant, and rss wasn't stable at all after running the script more than 10 times.</p>
+
+            <p>we tested different allocators, including glibc.</p>
+
+            <p>we eventually chose mimalloc.</p>
+
+            <p>not because it had the lowest rss.</p>
+
+            <p>the important thing was stability.</p>
+
+            <p>across 10 different runs, glibc could have around a 30 mb difference in rss, while mimalloc was only around 0.5 mb apart.</p>
+
+            <p>around 270–300 mb with glibc versus roughly 270–270.5 mb with mimalloc.</p>
+
+            <p>it also gave us a performance improvement on the same script. the runtime dropped by around 0.5 seconds.</p>
+
+            <p>so we went with mimalloc.</p>
+
+            <h2>the parser</h2>
+
+            <p>i was thinking about what else i should talk about, and yeah, the parser is probably worth mentioning.</p>
+
+            <p>if you read the documentation right now, you'll still see that quanta has an ast.</p>
+
+            <p>yes, it does.</p>
+
+            <p>but why?</p>
+
+            <p>as i mentioned above, we managed to bring the rss of that bundled script down to roughly 170–180 mb with a mechanism we call "taped expressions".</p>
+
+            <p>however, statements still create expressions internally, and you can also see this in places like classes and functions.</p>
+
+            <p>so why don't we just remove the ast completely?</p>
+
+            <p>first, because for me, it's currently not worth doing.</p>
+
+            <p>the effect of the ast on rss has already gone from around 77 mb down to around 3 mb.</p>
+
+            <p>for those remaining 3 mb, the amount of work required isn't really worth the potential correctness issues it could introduce.</p>
+
+            <p>we also try to keep the parse tree as small as possible with techniques like lazy parsing.</p>
+
+            <p>so yeah, the ast is still there.</p>
+
+            <p>and for now, i'm okay with that.</p>
+
+            <h2>where quanta stands today -- and its limitations</h2>
+
+            <p>today, quanta is honestly in a much better place than i could have imagined one year ago.</p>
+
+            <p>its performance is, in my opinion, good enough for the first stage of solar.</p>
+
+            <p>obviously, it isn't going to look like a jit-enabled engine, but for solar's initial development stage, it's enough.</p>
+
+            <p>and later, i already have plans for things like a jit.</p>
+
+            <p>temporal isn't implemented yet.</p>
+
+            <p>intl support isn't there yet either.</p>
+
+            <p>and performance shouldn't be compared directly with jit-enabled engines.</p>
+
+            <p>other than that, even though quanta has been heavily stress-tested, tested with test262, and compared against other engines in areas test262 doesn't cover, there can still be something missing somewhere.</p>
+
+            <p>that's just something you have to accept with software.</p>
+
+            <p>even today, bugs appear in all kinds of software.</p>
+
+            <p>so these are the limitations i think people should know about when looking at quanta today.</p>
+
+            <h2>closing</h2>
+
+            <p>i don't know if i'll be able to keep working on solar forever.</p>
+
+            <p>i don't know how long i'll continue it or how far i'll take it.</p>
+
+            <p>i reached the point of giving up on quanta more than once, but i got through it.</p>
+
+            <p>quanta taught me a lot.</p>
+
+            <p>maybe i still don't know every part of the javascript syntax.</p>
+
+            <p>but i also don't want to underestimate what i've built.</p>
+
+            <p>i'm completely open to criticism, as long as it's respectful.</p>
+
+            <p>because this is my engine.</p>
+
+            <p>it's a part of my dream.</p>
+
+            <p>it's quanta.</p>
+
+            <p>thank you for giving your time to this.</p>
+
+            <p><em>Written by Ata Türkçü on September 30 2026</em></p>
+        </article>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../script.js"></script>
+</body>
+</html>
